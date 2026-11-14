@@ -59,6 +59,8 @@ app.get('/api/matches', async (req, res) => {
             }
         });
 
+        // Error handling for the API response
+        
         if (response.ok) {
             const data = await response.json();
             res.json(data);
