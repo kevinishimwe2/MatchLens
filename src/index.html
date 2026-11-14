@@ -1,13 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
-    <script src="script.js" defer></script>
+
     <title>MatchLens</title>
 </head>
+
 <body>
-    <h1>MatchLens</h1>
+    <header>
+        <h1>MatchLens</h1>
+    </header>
+
+    <main>
+        <section>
+            <div>
+                <label for="league">League:</label>
+                <select id="league">
+                    <option value="">Select a League</option>
+                    <option value="PL">Premier League</option>
+                    <option value="BL1">Bundesliga</option>
+                    <option value="SA">Serie A</option>
+                    <option value="PD">La Liga</option>
+                    <option value="FL1">Ligue 1</option>
+                    <option value="DED">Eredivisie</option>
+                    <option value="PPL">Primeira Liga</option>
+                    <option value="BSA">Campeonato Brasileiro Serie A</option>
+                    <option value="CL">Champions League</option>
+                    <option value="WC">FIFA World Cup</option>
+                    <option value="EC">UEFA European Championship</option>
+                </select>
+
+                <label for="status">Status:</label>
+                <select id="status">
+                    <option value="">ALL</option>
+                    <option value="SCHEDULED">Scheduled</option>
+                    <option value="IN_PLAY">Live</option>
+                    <option value="FINISHED">Finished</option>
+                    <option value="POSTPONED">Postponed</option>
+
+                </select>
+
+                <label for="dateFrom">From Date:</label>
+                <input type="date" id="dateFrom">
+
+                <label for="dateTo">To Date:</label>
+                <input type="date" id="dateTo">
+
+                <label for="matchday">Matchday:</label>
+                <input type="number" id="matchday" min="1" max="38">
+
+                <label for="search">Team Search:</label>
+                <input type="text" id="search" placeholder="Enter team name">
+
+                <label for="sort">Sort by:</label>
+                <select id="sort">
+                    <option value="">Select a Sort Option</option>
+                    <option value="dateDesc">Date: Newest First</option>
+                    <option value="dateAsc">Date: Oldest First</option>
+                    <option value="TeamAsc">Team Name: A-Z</option>
+                    <option value="TeamDesc">Team Name: Z-A</option>
+                </select>
+
+                
+                <button id="applyBtn">Apply</button>
+
+                
+                <button id="resetBtn">Reset</button>
+            </div>
+
+            <div id="message">
+
+            </div>
+
+            <div id="results">
+
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p>Data from <a href="https://www.football-data.org/" target="_blank" rel="noopener noreferrer">football-data.org</a></p>
+        <p>&copy; 2026 MatchLens. All rights reserved.</p>
+    </footer>
+    <script src="script.js" defer></script>
 </body>
+
 </html>

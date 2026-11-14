@@ -4,8 +4,8 @@ const app = express();
 app.use(express.static('src'));
 const port = process.env.PORT || 5500;
 // Arrays of the Competition codes and status codes of the matches
-const league = ["PL", "CL", "PD", "BL1", "SA", "FL1", "DED", "PPL", "BSA", "WC", "EC", "ELC"];
-const validstatus = ["SCHEDULED", "LIVE", "IN_PLAY", "PAUSED", "FINISHED", "POSTPONED", "SUSPENDED", "CANCELED"];
+const league = ["PL", "CL", "PD", "BL1", "SA", "FL1", "DED", "PPL", "BSA", "WC", "EC"];
+const validstatus = ["SCHEDULED","IN_PLAY","FINISHED", "POSTPONED"];
 
 
 app.get('/api/matches', async (req, res) => {
@@ -60,7 +60,7 @@ app.get('/api/matches', async (req, res) => {
         });
 
         // Error handling for the API response
-        
+
         if (response.ok) {
             const data = await response.json();
             res.json(data);
