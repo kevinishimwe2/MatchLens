@@ -24,7 +24,7 @@ async function loadMatches() {
         if (inputDateTo.value) {
             params.append('dateTo', inputDateTo.value);
         }
-        
+
         messageDiv.textContent = 'Loading matches...';
         const response = await fetch('/api/matches?' + params.toString());
         if (!response.ok) {
@@ -87,7 +87,40 @@ function render() {
     list.slice(0, 10).forEach(match => {
         const card = document.createElement('div');
         card.className = 'match-card';
-        card.textContent = `${match.homeTeam.name} vs ${match.awayTeam.name} - ${match.status} - ${new Date(match.utcDate).toLocaleString()}`;
+        const homeScore = match.score.fullTime.home;
+        const awayScore = match.score.fullTime.away;
+        const middle = homeScore === null ? 'vs' : `${homeScore} - ${awayScore}`;
+        // Div for the TeamsRow
+        const teamsRow = document.createElement('div');
+        teamsRow.className = 'teams-row';
+        const home = document.createElement('span');
+        const away = document.createElement('span');
+        const score = document.createElement('span');
+        home.className = 'home';
+        away.className = 'away';
+        score.className = 'score';
+        home.textContent = `${match.homeTeam.name}`;
+        away.textContent = `${match.awayTeam.name}`;
+        score.textContent = `${middle}`;
+
+        // Div for the infoRow
+        const infoRow = document.createElement('div');
+        infoRow.className = 'info-row';
+        const date = document.createElement('span');
+        const status = document.createElement('span');
+        date.className = 'date';
+        status.className = 'status';
+        date.textContent = `${new Date(match.utcDate).toLocaleString()}`;
+        status.textContent = `   ${match.status}`;
+        teamsRow.appendChild(home);
+        teamsRow.appendChild(score);
+        teamsRow.appendChild(away);
+        infoRow.appendChild(date);
+        infoRow.appendChild(status);
+
+        card.appendChild(infoRow);
+        card.appendChild(teamsRow);
+        
         resultsDiv.appendChild(card);
     });
 }
