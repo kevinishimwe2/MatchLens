@@ -11,11 +11,22 @@ const resultsDiv = document.getElementById('results');
 const messageDiv = document.getElementById('message');
 
 let allMatches = [];
-// Load matches from the API and set the default matchday
+// Load matches from the API and set the default matchDay
 async function loadMatches() {
     try {
-        const response = await fetch('/api/matches');
-
+        const params = new URLSearchParams();
+        if (selectLeague.value) {
+            params.append('league', selectLeague.value);
+        }
+        if (inputDateFrom.value) {
+            params.append('dateFrom', inputDateFrom.value);
+        }
+        if (inputDateTo.value) {
+            params.append('dateTo', inputDateTo.value);
+        }
+        
+        messageDiv.textContent = 'Loading matches...';
+        const response = await fetch('/api/matches?' + params.toString());
         if (!response.ok) {
             throw new Error(`${response.status} `);
         }
@@ -33,7 +44,7 @@ async function loadMatches() {
     }
 
 }
-loadMatches();
+
 
 // Filter and render matches based on selected criteria
 function render() {
@@ -95,3 +106,24 @@ selectStatus.addEventListener('change', function () {
     selectMatchDay.value = '';
     render();
 });
+
+// Apply button click event
+applyButton.addEventListener('click', function () {
+    selectMatchDay.value = '';
+    loadMatches();
+});
+
+// Reset button click event
+resetButton.addEventListener('click', function () {
+    selectLeague.value = '';
+    selectStatus.value = '';
+    inputDateFrom.value = '';
+    inputDateTo.value = '';
+    selectMatchDay.value = '';
+    inputSearch.value = '';
+    selectSort.value = 'dateAsc';
+    loadMatches();
+});
+
+// Initial load of matches
+loadMatches();
