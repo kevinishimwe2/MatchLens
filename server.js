@@ -65,7 +65,47 @@ app.get('/api/matches', async (req, res) => {
             const data = await response.json();
             res.json(data);
         }
-        else {
+        else{
+            await handleApiError(response, res);
+        }
+
+    }
+    catch (error) {
+        console.error('Error fetching data from API:', error);
+        res.status(502).json({ error: 'Server is not available' });
+    }
+});
+
+app.get('/api/standings', async (req, res) =>{
+    const selectedLeague = req.query.league || 'PL';
+    if (!league.includes(selectedLeague)) {
+        return res.status(400).json({ error: 'League not found' });
+    }
+    try {
+        const params = new URLSearchParams();
+        let url = process.env.API_URL + `competitions/${selectedLeague}/standings`;
+        const response = await fetch(url, {
+            headers: {
+                'X-Auth-Token': process.env.TOKEN
+            }
+        });
+        if (response.ok) {
+            const data = await response.json();
+            res.json(data);
+        }
+        else{
+            await handleApiError(response, res);
+        }
+        
+
+    }
+    catch (error) {
+        console.error('Error fetching data from API:', error);
+        res.status(502).json({ error: 'Server is not available' });
+    }
+
+});
+function handleApiError(response, res){
 
             if (response.status === 429) {
                 res.status(response.status).json({ error: 'Too many requests, wait a minute and try again.' });
@@ -80,16 +120,8 @@ app.get('/api/matches', async (req, res) => {
                 res.status(response.status).json({ error: 'Service is unavailable, try again.' });
             }
 
-        }
-
-    }
-    catch (error) {
-        console.error('Error fetching data from API:', error);
-        res.status(502).json({ error: 'Server is not available' });
-    }
-});
-
-
+        
+}
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
