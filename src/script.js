@@ -11,7 +11,7 @@ const resultsDiv = document.getElementById('results');
 const messageDiv = document.getElementById('message');
 
 let allMatches = [];
-
+// Load matches from the API and set the default matchday
 async function loadMatches() {
     try {
         const response = await fetch('/api/matches');
@@ -34,17 +34,27 @@ async function loadMatches() {
     
 }   
 loadMatches();
+
+// Filter and render matches based on selected criteria
 function render() {
     let list = [...allMatches];
     if (selectMatchDay.value) {
         list = list.filter(m => m.matchday === parseInt(selectMatchDay.value, 10));
+    }
+    const searchText = inputSearch.value.trim().toLowerCase();
+    if (searchText) {
+        list = list.filter(m => m.homeTeam.name.toLowerCase().includes(searchText) || m.awayTeam.name.toLowerCase().includes(searchText));
     }
     resultsDiv.innerHTML = '';
     list.slice(0, 10).forEach(match => {
         const card = document.createElement('div');
         card.className = 'match-card';
         
-        card.textContent = `${match.homeTeam.name} vs ${match.awayTeam.name} - ${match.status} - ${new Date(match.utcDate).toLocaleDateString()}`;
+        card.textContent = `${match.homeTeam.name} vs ${match.awayTeam.name} - ${match.status} - ${new Date(match.utcDate).toLocaleString()}`;
         resultsDiv.appendChild(card);
     });
 }
+
+// Search box
+inputSearch.addEventListener('input', render);
+
