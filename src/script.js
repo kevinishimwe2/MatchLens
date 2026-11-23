@@ -9,6 +9,12 @@ const applyButton = document.getElementById('applyBtn');
 const resetButton = document.getElementById('resetBtn');
 const resultsDiv = document.getElementById('results');
 const messageDiv = document.getElementById('message');
+const tabMatches = document.getElementById('tabMatches');
+const tabStandings = document.getElementById('tabStandings');
+const matchesSection = document.getElementById('matchesSection');
+const standingsSection = document.getElementById('standingsSection');
+const standingMessage = document.getElementById('standingsMessage');
+const standingsDiv = document.getElementById('standingsDiv');
 
 let allMatches = [];
 // Load matches from the API and set the default matchDay
@@ -99,8 +105,8 @@ function render() {
         home.className = 'home';
         away.className = 'away';
         score.className = 'score';
-        home.textContent = `${match.homeTeam.name}`;
-        away.textContent = `${match.awayTeam.name}`;
+        home.textContent = `${match.homeTeam.name} `;
+        away.textContent = ` ${match.awayTeam.name}`;
         score.textContent = `${middle}`;
 
         // Div for the infoRow
@@ -109,7 +115,7 @@ function render() {
         const date = document.createElement('span');
         const status = document.createElement('span');
         date.className = 'date';
-        status.className = 'status';
+        status.className = 'status' + match.status.toLowerCase();
         date.textContent = `${new Date(match.utcDate).toLocaleString()}`;
         status.textContent = `   ${match.status}`;
         teamsRow.appendChild(home);
@@ -124,6 +130,90 @@ function render() {
         resultsDiv.appendChild(card);
     });
 }
+
+// Standings Table
+async function loadStandings(){
+    try{
+        standingMessage.textContent = 'Loading Standings...';
+        const league = selectLeague.value || 'PL';
+        const response = await fetch('/api/standings?league=' + league);
+        if (!response.ok) {
+            const err = await response.json();
+            standingMessage.textContent = err.error;
+            return;
+            
+        }
+        const data = await response.json();
+        
+        const totalTable = data.standings.find(s => s.type === 'TOTAL')
+        const rows = totalTable.table;
+        renderStandings(rows);
+        standingMessage.textContent = '';
+    }
+    catch(error){
+        console.error('Error loading Standings:', error);
+    }
+
+}
+
+function renderStandings(rows){
+    standingsDiv.innerHTML = '';
+    const table = document.createElement('table');
+    const headerRow = document.createElement('tr');
+    const headers = ['Pos', 'Team', 'P', 'W', 'D', 'L', 'GF', 'GA', 'GD', 'Pts'];
+    headers.forEach(heading =>{
+        const th = document.createElement('th');
+        th.textContent = heading;
+        headerRow.appendChild(th);
+    });
+    table.appendChild(headerRow);
+
+    rows.forEach(r => {
+        const tr = document.createElement('tr');
+        const td = document.createElement('td');
+        td.textContent = r.position;
+        const teamCell = document.createElement('td');
+        const img = document.createElement('img');
+        img.src = r.team.crest;
+        img.alt = r.team.name; 
+        img.className = 'crest';
+        const teamName = document.createElement('span');
+        teamName.textContent = r.team.name;
+        teamCell.appendChild(img);
+        teamCell.appendChild(teamName);
+        tr.appendChild(td);
+        tr.appendChild(teamCell);
+        
+        const values = [r.playedGames, r.won, r.draw, r.lost, r.goalsFor, r.goalsAgainst, r.goalDifference, r.points];
+        values.forEach( value => {
+            const cell = document.createElement('td');
+            cell.textContent = value;
+            tr.appendChild(cell);
+        })
+        table.appendChild(tr);
+
+    })
+
+    standingsDiv.appendChild(table);
+}
+
+function showMatches(){
+    matchesSection.classList.remove('hidden');
+    standingsSection.classList.add('hidden');
+    tabMatches.classList.add('active');
+    tabStandings.classList.remove('active');
+}
+
+function showStandings(){
+    matchesSection.classList.add('hidden');
+    standingsSection.classList.remove('hidden');
+    tabMatches.classList.remove('active');
+    tabStandings.classList.add('active');
+    loadStandings();
+}
+
+tabMatches.addEventListener('click', showMatches);
+tabStandings.addEventListener('click', showStandings);
 
 // Search box
 inputSearch.addEventListener('input', function () {

@@ -13,9 +13,13 @@
     <header>
         <h1>MatchLens</h1>
     </header>
-
+    
     <main>
-        <section>
+        <nav>
+            <button id="tabMatches" type="button">Matches</button>
+            <button id="tabStandings" type="button">Standings</button>
+        </nav>
+        <section id="matchesSection">
             <div>
                 <label for="league">League:</label>
                 <select id="league">
@@ -76,6 +80,15 @@
             </div>
 
             <div id="results">
+
+            </div>
+        </section>
+
+        <section id="standingsSection" class="hidden">
+            <div id="standingsMessage">
+
+            </div>
+            <div id="standingsDiv">
 
             </div>
         </section>

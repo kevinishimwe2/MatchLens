@@ -1,0 +1,69 @@
+body{
+    font-family: arial;
+    max-width: auto;
+    margin: 0 auto;
+    padding: 20px;
+    background: none;
+}
+
+.hidden{
+    display: none;
+}
+
+nav button.active{
+    background: ;
+    color: ;
+    font-weight: ;
+    border-bottom: ;
+}
+.crest { 
+    height: 20px; 
+}
+.match-card{
+    border: ;
+    border-radius: ;
+    padding: ;
+    margin-bottom: ;
+    background: ;
+    box-shadow: ;
+}
+.teams-row{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+}
+.home{
+    flex: 1;
+    text-align: right;
+}
+.away {
+    flex: 1;
+    text-align: left;
+}
+.score{
+    font-size: ;
+    padding: 0 12px;
+    min-width: auto;
+}
+.info-row{
+    display: flex;
+    justify-content: space-between;
+    font-size: ;
+    color: grey;
+}
+.status{
+    padding: ;
+    border-radius: ;
+    font-size: ;
+    color: white;
+}
+.finished{
+    background-color: greenyellow;
+}
+.in_play{
+    background-color: red;
+}
+.timed{
+    background-color: blueviolet;
+}
