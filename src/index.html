@@ -4,95 +4,160 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
-
     <title>MatchLens</title>
+    <!-- Set the saved theme before the page paints, so there is no flash -->
+    <script>
+        (function () {
+            var theme = null;
+            try { theme = localStorage.getItem('theme'); } catch (e) { }
+            if (!theme) {
+                theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+    <link rel="stylesheet" href="styles.css">
 </head>
 
-<body>
-    <header>
-        <h1>MatchLens</h1>
-    </header>
-    
-    <main>
-        <nav>
-            <button id="tabMatches" type="button">Matches</button>
-            <button id="tabStandings" type="button">Standings</button>
+<body data-tab="home">
+    <header class="topbar">
+        <a class="brand" href="#">Match<span>Lens</span></a>
+
+        <nav id="mainNav" aria-label="Main navigation">
+            <button type="button" class="active" data-tab="home">Home</button>
+            <button type="button" data-tab="matches">Matches</button>
+            <button type="button" data-tab="standings">Standings</button>
+            <button type="button" data-tab="compare">Compare</button>
         </nav>
-        <section id="matchesSection">
-            <div>
-                <label for="league">League:</label>
-                <select id="league">
-                    <option value="">Select a League</option>
-                    <option value="PL">Premier League</option>
-                    <option value="BL1">Bundesliga</option>
-                    <option value="SA">Serie A</option>
-                    <option value="PD">La Liga</option>
-                    <option value="FL1">Ligue 1</option>
-                    <option value="DED">Eredivisie</option>
-                    <option value="PPL">Primeira Liga</option>
-                    <option value="BSA">Campeonato Brasileiro Serie A</option>
-                    <option value="CL">Champions League</option>
-                    <option value="WC">FIFA World Cup</option>
-                    <option value="EC">UEFA European Championship</option>
-                </select>
 
-                <label for="status">Status:</label>
-                <select id="status">
-                    <option value="">ALL</option>
-                    <option value="TIMED">Upcoming</option>
-                    <option value="IN_PLAY">Live</option>
-                    <option value="FINISHED">Finished</option>
-                    <option value="POSTPONED">Postponed</option>
+        <div class="topbar-actions">
+            <button id="themeBtn" class="icon-btn" type="button" aria-label="Switch theme">☾</button>
+            <button id="menuBtn" class="icon-btn menu-btn" type="button" aria-label="Open menu"
+                aria-expanded="false" aria-controls="mainNav">☰</button>
+        </div>
+    </header>
 
-                </select>
+    <!-- One filters bar shared by every tab -->
+    <section id="filters" class="filters" aria-label="Filters">
+        <div class="field">
+            <label for="league">League</label>
+            <select id="league">
+                <option value="">Select a League</option>
+                <option value="PL">Premier League</option>
+                <option value="BL1">Bundesliga</option>
+                <option value="SA">Serie A</option>
+                <option value="PD">La Liga</option>
+                <option value="FL1">Ligue 1</option>
+                <option value="DED">Eredivisie</option>
+                <option value="PPL">Primeira Liga</option>
+                <option value="BSA">Campeonato Brasileiro Serie A</option>
+                <option value="CL">Champions League</option>
+                <option value="WC">FIFA World Cup</option>
+                <option value="EC">UEFA European Championship</option>
+            </select>
+        </div>
 
-                <label for="dateFrom">From Date:</label>
-                <input type="date" id="dateFrom">
+        <div class="field">
+            <label for="search">Team search</label>
+            <input type="text" id="search" placeholder="Enter team name">
+        </div>
 
-                <label for="dateTo">To Date:</label>
-                <input type="date" id="dateTo">
+        <!-- Only shown on the Matches tab -->
+        <div class="field matches-only">
+            <label for="status">Status</label>
+            <select id="status">
+                <option value="">ALL</option>
+                <option value="TIMED">Upcoming</option>
+                <option value="IN_PLAY">Live</option>
+                <option value="FINISHED">Finished</option>
+                <option value="POSTPONED">Postponed</option>
+            </select>
+        </div>
 
-                <label for="matchday">matchDay:</label>
-                <input type="number" id="matchday" min="1" max="38">
+        <div class="field matches-only">
+            <label for="dateFrom">From date</label>
+            <input type="date" id="dateFrom">
+        </div>
 
-                <label for="search">Team Search:</label>
-                <input type="text" id="search" placeholder="Enter team name">
+        <div class="field matches-only">
+            <label for="dateTo">To date</label>
+            <input type="date" id="dateTo">
+        </div>
 
-                <label for="sort">Sort by:</label>
-                <select id="sort">
-                    <option value="">Select a Sort Option</option>
-                    <option value="dateDesc">Date: Newest First</option>
-                    <option value="dateAsc">Date: Oldest First</option>
-                    <option value="TeamAsc">Team Name: A-Z</option>
-                    <option value="TeamDesc">Team Name: Z-A</option>
-                </select>
+        <div class="field matches-only">
+            <label for="matchday">Matchday</label>
+            <input type="number" id="matchday" min="1" max="38">
+        </div>
 
-                
-                <button id="applyBtn">Apply</button>
+        <div class="field matches-only">
+            <label for="sort">Sort by</label>
+            <select id="sort">
+                <option value="">Select a Sort Option</option>
+                <option value="dateDesc">Date: Newest First</option>
+                <option value="dateAsc">Date: Oldest First</option>
+                <option value="TeamAsc">Team Name: A-Z</option>
+                <option value="TeamDesc">Team Name: Z-A</option>
+            </select>
+        </div>
 
-                
-                <button id="resetBtn">Reset</button>
-            </div>
+        <!-- Only shown on the Standings tab -->
+        <div class="field standings-only">
+            <label for="standingsSort">Sort table by</label>
+            <select id="standingsSort">
+                <option value="position">Position</option>
+                <option value="points">Points</option>
+                <option value="won">Wins</option>
+                <option value="goalDifference">Goal difference</option>
+                <option value="goalsFor">Goals scored</option>
+            </select>
+        </div>
 
-            <div id="message">
+        <div class="filter-buttons">
+            <button id="applyBtn" class="primary" type="button">Apply</button>
+            <button id="resetBtn" type="button">Reset</button>
+        </div>
+    </section>
 
-            </div>
+    <main>
+        <section id="homeSection">
+            <h2 class="section-title"><span class="live-dot"></span>Live now</h2>
+            <div id="liveMessage"></div>
+            <div id="liveDiv"></div>
 
-            <div id="results">
+            <h2 class="section-title">Football news <small id="newsProvider"></small></h2>
+            <div id="newsMessage"></div>
+            <div id="newsDiv"></div>
+            <div id="newsSources" class="sources"></div>
+        </section>
 
-            </div>
+        <section id="matchesSection" class="hidden">
+            <div id="message"></div>
+            <div id="results"></div>
+            <button id="moreBtn" class="more-btn" type="button" hidden>Load more</button>
         </section>
 
         <section id="standingsSection" class="hidden">
-            <div id="standingsMessage">
+            <div id="standingsMessage"></div>
+            <div id="standingsDiv" class="table-wrap"></div>
+        </section>
 
+        <section id="compareSection" class="hidden">
+            <div class="compare-pickers">
+                <div class="field">
+                    <label for="compareHome">Team A</label>
+                    <select id="compareHome"></select>
+                </div>
+                <span class="vs">vs</span>
+                <div class="field">
+                    <label for="compareAway">Team B</label>
+                    <select id="compareAway"></select>
+                </div>
             </div>
-            <div id="standingsDiv">
-
-            </div>
+            <div id="compareMessage"></div>
+            <div id="compareDiv"></div>
         </section>
     </main>
+
     <footer>
         <p>Data from <a href="https://www.football-data.org/" target="_blank" rel="noopener noreferrer">football-data.org</a></p>
         <p>&copy; 2026 MatchLens. All rights reserved.</p>
