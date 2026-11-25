@@ -2,9 +2,8 @@
 
 MatchLens is a football analytics and match intelligence web application that aggregates live league standings, fixtures, football news, and AI-powered match insights in a clean, interactive interface.
 
-- **Live Deployed App:** [MatchLens Live](https://app.matchlensapp.tech)
-- **Demo Video:** [Watch Demo Video](INSERT_YOUR_DEMO_VIDEO_LINK_HERE) *(Replace with your YouTube/Vimeo/Loom link — max 2 minutes)*
-
+- **Live Deployed App:** <https://app.matchlensapp.tech>
+- **Demo Video:** <https://youtu.be/7qPHaWCQ3_g> 
 ---
 
 ## Features

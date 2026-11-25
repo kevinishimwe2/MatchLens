@@ -1,6 +1,6 @@
 require('dotenv').config();
 require('node:dns').setDefaultResultOrder('ipv4first');
-
+const net = require('net');
 if (typeof net.setDefaultAutoSelectFamilyAttemptTimeout === 'function') {
     net.setDefaultAutoSelectFamilyAttemptTimeout(3000);
 }
