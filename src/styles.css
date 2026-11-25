@@ -1,4 +1,4 @@
-/* ---------- Theme tokens ---------- */
+/* Reusable themes */
 :root {
     --bg: #f3f6fb;
     --surface: #ffffff;
@@ -58,7 +58,7 @@ button {
     outline-offset: 2px;
 }
 
-/* ---------- Header + nav ---------- */
+/* Header */
 .topbar {
     position: sticky;
     top: 0;
@@ -126,7 +126,7 @@ button {
     display: none;
 }
 
-/* ---------- Shared filters bar ---------- */
+/* Filters */
 .filters {
     display: flex;
     flex-wrap: wrap;
@@ -182,7 +182,7 @@ body:not([data-tab="matches"]) .matches-only {
     color: var(--accent-text);
 }
 
-/* ---------- Content ---------- */
+/* Divs that display message or results */
 main {
     max-width: 960px;
     margin: 0 auto;
@@ -262,7 +262,7 @@ main {
     background: #b7791f;
 }
 
-/* ---------- Standings ---------- */
+/* Standings Table */
 .table-wrap {
     overflow-x: auto;
     border: 1px solid var(--border);
@@ -327,7 +327,7 @@ tr:last-child td {
     background: #d6443a;
 }
 
-/* ---------- Compare ---------- */
+/* Comparisons */
 .compare-pickers {
     display: flex;
     align-items: flex-end;
@@ -390,7 +390,7 @@ tr:last-child td {
     object-fit: contain;
 }
 
-/* ---------- Footer ---------- */
+/*Footer  */
 footer {
     padding: 20px;
     text-align: center;
@@ -402,7 +402,7 @@ footer a {
     color: var(--accent);
 }
 
-/* ---------- Mobile: hamburger menu ---------- */
+/* View aspects of different devices */
 @media (max-width: 720px) {
     .topbar {
         padding: 0 16px;
@@ -478,7 +478,7 @@ footer a {
     }
 }
 
-/* ---------- Home: live + news ---------- */
+/*Home Tab*/
 .section-title {
     display: flex;
     align-items: baseline;

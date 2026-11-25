@@ -34,7 +34,7 @@ const PAGE_SIZE = 10;
 const moreButton = document.getElementById('moreBtn');
 const standingsSort = document.getElementById('standingsSort');
 
-// Reads JSON, and gives a clear message if the server sent an HTML page instead
+
 async function readJson(response) {
     try {
         return await response.json();
@@ -44,7 +44,7 @@ async function readJson(response) {
     }
 }
 
-// Team badge: the crest, or the team's initials when there is no crest
+// Team emblems
 function teamBadge(team) {
     const fallback = () => {
         const span = document.createElement('span');
@@ -63,7 +63,6 @@ function teamBadge(team) {
     return img;
 }
 
-// The badge always sits next to the score: after the name for home, before it for away
 function addTeam(container, team) {
     const badge = teamBadge(team);
     const name = document.createTextNode(team.name);
@@ -87,7 +86,6 @@ function resetPaging() {
     extraMatchdays = [];
 }
 
-// Matchday to start from: latest finished one for Finished, otherwise the next unplayed one
 function defaultMatchday() {
     if (selectStatus.value === 'FINISHED') {
         const finished = allMatches
@@ -106,7 +104,7 @@ let matchesLeague = '';
 let currentTab = 'home';
 let newsLeague = null;
 
-// ---------- Theme (dark / light) ----------
+//Dark and Light mode switch
 function applyTheme(theme) {
     document.documentElement.setAttribute('data-theme', theme);
     themeButton.textContent = theme === 'dark' ? '☀' : '☾';
@@ -128,14 +126,14 @@ function toggleTheme() {
 themeButton.addEventListener('click', toggleTheme);
 applyTheme(document.documentElement.getAttribute('data-theme') || 'dark');
 
-// ---------- Hamburger menu (mobile) ----------
+//Hamburger menu nav when in mobile view
 menuButton.addEventListener('click', function () {
     const isOpen = mainNav.classList.toggle('open');
     menuButton.setAttribute('aria-expanded', String(isOpen));
     menuButton.textContent = isOpen ? '✕' : '☰';
 });
 
-// ---------- Tabs ----------
+// The tabs
 function showTab(name) {
     currentTab = name;
     document.body.setAttribute('data-tab', name);
@@ -173,7 +171,7 @@ navButtons.forEach(button => {
     button.addEventListener('click', () => showTab(button.dataset.tab));
 });
 
-// ---------- Matches ----------
+// Matches tab/section
 async function loadMatches() {
     try {
         const params = new URLSearchParams();
@@ -307,13 +305,13 @@ function render() {
     }
 }
 
-// ---------- Standings ----------
+// Standings tab/section
 function setStandingsMessage(text) {
     standingMessage.textContent = text;
     compareMessage.textContent = text;
 }
 
-// force = true always re-fetches, false reuses the cached table for the same league
+
 async function loadStandings(force) {
     const league = appliedLeague || 'PL';
     if (!force && standingsRows.length > 0 && standingsLeague === league) {
@@ -420,7 +418,7 @@ function renderStandings() {
     standingsDiv.appendChild(table);
 }
 
-// ---------- Compare ----------
+// Comparison tab/section
 function fillCompare() {
     compareHome.innerHTML = '';
     compareAway.innerHTML = '';
@@ -509,7 +507,7 @@ standingsSort.addEventListener('change', renderStandings);
 compareHome.addEventListener('change', renderCompare);
 compareAway.addEventListener('change', renderCompare);
 
-// ---------- Home: live matches + news ----------
+// Live matches and News on the home page
 async function loadLive() {
     try {
         liveMessage.textContent = liveDiv.children.length === 0 ? 'Loading live matches...' : '';
@@ -664,15 +662,14 @@ function renderNews(data) {
     }
 }
 
-// keep live scores fresh while the Home tab is open
+
 setInterval(function () {
     if (currentTab === 'home' && !document.hidden) {
         loadLive();
     }
 }, 60000);
 
-// ---------- Shared filters ----------
-// Apply reloads whichever tab is open
+// Filters
 function applyFilters() {
     appliedLeague = selectLeague.value;
     resetPaging();

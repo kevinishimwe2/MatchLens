@@ -1,8 +1,6 @@
 require('dotenv').config();
 require('node:dns').setDefaultResultOrder('ipv4first');
-// Node gives each connection attempt only 250ms by default, which is too short on slower networks
-// (this was causing ETIMEDOUT for gnews.io while curl worked), so allow more time
-const net = require('node:net');
+
 if (typeof net.setDefaultAutoSelectFamilyAttemptTimeout === 'function') {
     net.setDefaultAutoSelectFamilyAttemptTimeout(3000);
 }
@@ -14,7 +12,7 @@ const port = process.env.PORT || 5500;
 const league = ["PL", "CL", "PD", "BL1", "SA", "FL1", "DED", "PPL", "BSA", "WC", "EC"];
 const validstatus = ["SCHEDULED","IN_PLAY","FINISHED", "POSTPONED"];
 
-
+// Matches api route
 app.get('/api/matches', async (req, res) => {
 
     // Query for searching matches by league, status, date range and matchday
@@ -82,7 +80,7 @@ app.get('/api/matches', async (req, res) => {
         res.status(502).json({ error: 'Server is not available' });
     }
 });
-
+// Standings api route
 app.get('/api/standings', async (req, res) =>{
     const selectedLeague = req.query.league || 'PL';
     if (!league.includes(selectedLeague)) {
@@ -112,7 +110,7 @@ app.get('/api/standings', async (req, res) =>{
     }
 
 });
-// Live matches across every league
+// Live matches route
 app.get('/api/live', async (req, res) => {
     try {
         const response = await fetch(process.env.API_URL + 'matches?status=IN_PLAY,PAUSED', {
@@ -134,13 +132,13 @@ app.get('/api/live', async (req, res) => {
     }
 });
 
-// Football news written by Gemini (with Google Search), cached for 10 minutes
+//News apis route 
 const leagueNames = {
     PL: 'Premier League', CL: 'Champions League', PD: 'La Liga', BL1: 'Bundesliga',
     SA: 'Serie A', FL1: 'Ligue 1', DED: 'Eredivisie', PPL: 'Primeira Liga',
     BSA: 'Campeonato Brasileiro Serie A', WC: 'FIFA World Cup', EC: 'UEFA European Championship'
 };
-// Finished matches from the last few days, one text line per match
+
 async function recentResults(code, topic) {
     try {
         const day = 24 * 60 * 60 * 1000;
@@ -169,8 +167,7 @@ async function recentResults(code, topic) {
     }
 }
 
-// Option 1: real news articles from GNews (free key at gnews.io, needs GNEWS_API_KEY)
-// Search words per league, so "football" never pulls in American football
+
 const gnewsQueries = {
     '': 'soccer OR "Premier League" OR "La Liga" OR Bundesliga OR "Serie A" OR "Ligue 1" OR "Champions League"',
     PL: '"Premier League"',
@@ -185,7 +182,7 @@ const gnewsQueries = {
     WC: '"World Cup" soccer',
     EC: '"European Championship" soccer'
 };
-// articles that are clearly about American football are dropped
+
 const notSoccer = /\b(NFL|NCAA|college football|American football|quarterback|touchdown|Super Bowl|gridiron)\b/i;
 
 let gnewsDownUntil = 0;
@@ -224,7 +221,7 @@ async function newsFromGNews(code) {
     }
 }
 
-// Calls Gemini once, retrying when the model says it is busy (503)
+
 async function askGemini(prompt, model, useSearch) {
     const requestBody = { contents: [{ parts: [{ text: prompt }] }] };
     if (useSearch) {
@@ -258,7 +255,6 @@ async function askGemini(prompt, model, useSearch) {
     return null;
 }
 
-// Option 2: Gemini writes the news from real recent results (or uses Google Search on a paid plan)
 async function newsFromGemini(code, topic) {
     if (!process.env.GEMINI_API_KEY) {
         return null;
@@ -307,7 +303,7 @@ async function newsFromGemini(code, topic) {
     return null;
 }
 
-// Option 3 (always works): plain latest results, no AI
+
 async function newsFromResults(code, topic) {
     const lines = await recentResults(code, topic);
     if (lines.length === 0) {
@@ -347,6 +343,7 @@ app.get('/api/news', async (req, res) => {
     res.json(result);
 });
 
+// Error handling function
 function handleApiError(response, res){
 
             if (response.status === 429) {
@@ -364,6 +361,8 @@ function handleApiError(response, res){
 
         
 }
+
+
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
